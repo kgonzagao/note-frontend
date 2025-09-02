@@ -13,6 +13,9 @@
       ],
       "@components/*": [
         "app/shared/components/*"
+      ],
+      "@utils/*": [
+        "app/shared/utils/*"
       ]
     },
     "strict": true,
