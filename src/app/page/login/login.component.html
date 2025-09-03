@@ -1,1 +1,49 @@
-<p>login works!</p>,
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+    <!-- Title -->
+    <h2 class="text-2xl font-semibold text-center mb-6">Sign In</h2>
+    <!-- form -->
+    <form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <!-- email -->
+      <mat-form-field class="w-full">
+        <mat-label>Enter your Username</mat-label>
+        <input matInput placeholder="Username" type="text" formControlName="username" />
+        @if (formUtils.isValidField(myForm,'username')) {
+        <mat-error>{{ formUtils.getFieldError(myForm, 'username') }}</mat-error>
+        }
+      </mat-form-field>
+      <!-- password -->
+      <mat-form-field class="w-full">
+        <mat-label>Enter your password</mat-label>
+        <input
+          matInput
+          [type]="hide() ? 'password' : 'text'"
+          formControlName="password"
+          placeholder="***********"
+        />
+        <a
+          class="btn mr-4"
+          matIconButton
+          matSuffix
+          (click)="clickEvent($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()"
+        >
+          <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </a>
+        @if (formUtils.isValidField(myForm,'password')) {
+        <mat-error>{{ formUtils.getFieldError(myForm, 'password') }}</mat-error>
+        }
+      </mat-form-field>
+      <!-- submit -->
+      <button matButton="filled" class="mt-2 w-full py-2" type="submit" [disabled]="myForm.invalid">
+        Log In
+      </button>
+    </form>
+    <!-- Sign Up Link -->
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Don't have an account?
+      <a routerLink="/register" class="text-blue-600 hover:underline">Sign up</a>
+    </p>
+  </div>
+</div>
