@@ -16,6 +16,9 @@
       ],
       "@utils/*": [
         "app/shared/utils/*"
+      ],
+      "@environment/*": [
+        "environments/*"
       ]
     },
     "strict": true,

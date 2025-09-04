@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormUtils } from '@utils/form-utils';
+import { AuthService } from '@core/auth/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -22,8 +23,10 @@ import { FormUtils } from '@utils/form-utils';
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
   hide = signal(true);
   formUtils = FormUtils;
+  hasError = signal(false);
 
   myForm = this.fb.group(
     {
@@ -51,6 +54,8 @@ export class RegisterComponent {
         Validators.required,
         Validators.pattern(FormUtils.notOnlySpacesPattern),
       ]),
+
+      roleIds: [[1]],
     },
     { validators: FormUtils.isFieldOneEqualFieldTwo('password', 'passwordConfirm') }
   );
@@ -58,6 +63,26 @@ export class RegisterComponent {
   onSubmit() {
     this.myForm.markAllAsTouched();
     console.log(this.myForm.value);
+
+    const {
+      fullName = '',
+      dni = '',
+      username = '',
+      password = '',
+      roleIds = [],
+    } = this.myForm.value;
+
+    this.authService.register(fullName!, dni!, username!, password!, roleIds!).subscribe((resp) => {
+      if (resp) {
+        console.log('registrado');
+        return;
+      }
+
+      this.hasError.set(true);
+      setTimeout(() => {
+        this.hasError.set(false);
+      }, 3000);
+    });
   }
 
   clickEvent(event: MouseEvent) {

@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormUtils } from '@utils/form-utils';
+import { AuthService } from '@core/auth/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -22,8 +23,10 @@ import { FormUtils } from '@utils/form-utils';
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
   hide = signal(true);
   formUtils = FormUtils;
+  hasError = signal(false);
 
   myForm = this.fb.group({
     username: new FormControl('', [
@@ -41,6 +44,20 @@ export class LoginComponent {
   onSubmit() {
     this.myForm.markAllAsTouched();
     console.log(this.myForm.value);
+
+    const { username = '', password = '' } = this.myForm.value;
+
+    this.authService.login(username!, password!).subscribe((resp) => {
+      if (resp) {
+        console.log('autenticado');
+        return;
+      }
+
+      this.hasError.set(true);
+      setTimeout(() => {
+        this.hasError.set(false);
+      }, 3000);
+    });
   }
 
   clickEvent(event: MouseEvent) {
