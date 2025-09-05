@@ -5,7 +5,6 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { AuthResponse } from '../interfaces/auth-response';
 import { TokenResponse } from '../interfaces/token-response';
 import { jwtDecode } from 'jwt-decode';
-import { UserCreateRequest } from '../interfaces/user-request';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.apiUrl;
@@ -16,7 +15,7 @@ const baseUrl = environment.apiUrl;
 export class AuthService {
   private _accessToken = signal<string | null>(localStorage.getItem('token'));
   private _refreshToken = signal<string | null>(sessionStorage.getItem('refreshToken'));
-  private _typeToken = signal<string | null>(null);
+  private _typeToken = signal<string | null>(localStorage.getItem('tokenType'));
   private _authStatus = signal<AuthStatus>('checking');
   private http = inject(HttpClient);
 
@@ -31,6 +30,7 @@ export class AuthService {
   });
 
   token = computed(this._accessToken);
+  type = computed(this._typeToken);
   subUser = computed(() => this.decodedToken()?.sub ?? null);
   isUser = computed(() => {
     if (this.decodedToken()?.roles.includes('ROLE_USER')) {
@@ -44,13 +44,13 @@ export class AuthService {
     }
     return false;
   });
+  isAuthenticated = computed(() => {
+    return !!this._accessToken() && !this.isTokenExpired();
+  });
   isTokenExpired = computed(() => {
     const exp = this.decodedToken()?.exp;
     if (!exp) return true;
     return exp < Math.floor(Date.now() / 1000);
-  });
-  isAuthenticated = computed(() => {
-    return !!this._accessToken() && !this.isTokenExpired();
   });
 
   login(username: string, password: string): Observable<boolean> {
@@ -94,13 +94,27 @@ export class AuthService {
     );
   }
 
-  logout() {
+  checkStatus(): Observable<boolean> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.logout();
+      return of(false);
+    }
+
+    return this.http.get<boolean>(`${baseUrl}/auth/check-admin`).pipe(
+      map((resp) => resp),
+      catchError((error: any) => this.handleAuthError(error))
+    );
+  }
+
+  logout(): void {
     this._accessToken.set(null);
     this._refreshToken.set(null);
     this._typeToken.set(null);
 
     localStorage.removeItem('token');
     sessionStorage.removeItem('refreshToken');
+    localStorage.removeItem('tokenType');
   }
 
   private handleAuthSuccess({ accessToken, refreshToken, type }: AuthResponse) {
@@ -110,6 +124,7 @@ export class AuthService {
 
     localStorage.setItem('token', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('tokenType', type);
 
     return true;
   }

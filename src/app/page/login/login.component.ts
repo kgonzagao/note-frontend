@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormUtils } from '@utils/form-utils';
 import { AuthService } from '@core/auth/services/auth.service';
+import { ErrorAlertComponent } from '@components/error-alert/error-alert.component';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ import { AuthService } from '@core/auth/services/auth.service';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
+    ErrorAlertComponent,
   ],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +26,7 @@ import { AuthService } from '@core/auth/services/auth.service';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router);
   hide = signal(true);
   formUtils = FormUtils;
   hasError = signal(false);
@@ -50,6 +53,7 @@ export class LoginComponent {
     this.authService.login(username!, password!).subscribe((resp) => {
       if (resp) {
         console.log('autenticado');
+        this.router.navigateByUrl('note');
         return;
       }
 
