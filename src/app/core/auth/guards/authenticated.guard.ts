@@ -9,7 +9,7 @@ export const authenticatedGuard: CanMatchFn = (route, segments) => {
   if (authService.isAuthenticated()) {
     return true;
   } else {
-    router.navigateByUrl('login');
+    router.navigateByUrl('/auth/login');
     return false;
   }
 };

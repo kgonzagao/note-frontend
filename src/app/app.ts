@@ -9,5 +9,5 @@ import { FooterComponent } from '@core/components/footer/footer.component';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('note');
+  protected readonly title = signal('Note');
 }

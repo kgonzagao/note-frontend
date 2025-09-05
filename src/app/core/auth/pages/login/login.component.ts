@@ -10,7 +10,7 @@ import { AuthService } from '@core/auth/services/auth.service';
 import { ErrorAlertComponent } from '@components/error-alert/error-alert.component';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   imports: [
     RouterLink,
     ReactiveFormsModule,
@@ -20,10 +20,10 @@ import { ErrorAlertComponent } from '@components/error-alert/error-alert.compone
     MatButtonModule,
     ErrorAlertComponent,
   ],
-  templateUrl: './register.component.html',
+  templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
+export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -31,61 +31,36 @@ export class RegisterComponent {
   formUtils = FormUtils;
   hasError = signal(false);
 
-  myForm = this.fb.group(
-    {
-      fullName: new FormControl('', [
-        Validators.required,
-        Validators.pattern(FormUtils.namePattern),
-      ]),
-      dni: new FormControl('', [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.pattern(FormUtils.notOnlySpacesPattern),
-      ]),
-      username: new FormControl('', [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.pattern(FormUtils.notOnlySpacesPattern),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.pattern(FormUtils.notOnlySpacesPattern),
-      ]),
-
-      passwordConfirm: new FormControl('', [
-        Validators.required,
-        Validators.pattern(FormUtils.notOnlySpacesPattern),
-      ]),
-
-      roleIds: [[1]],
-    },
-    { validators: FormUtils.isFieldOneEqualFieldTwo('password', 'passwordConfirm') }
-  );
+  myForm = this.fb.group({
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+      Validators.pattern(FormUtils.notOnlySpacesPattern),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(5),
+      Validators.pattern(FormUtils.notOnlySpacesPattern),
+    ]),
+  });
 
   onSubmit() {
     this.myForm.markAllAsTouched();
     console.log(this.myForm.value);
 
-    const {
-      fullName = '',
-      dni = '',
-      username = '',
-      password = '',
-      roleIds = [],
-    } = this.myForm.value;
+    const { username = '', password = '' } = this.myForm.value;
 
-    this.authService.register(fullName!, dni!, username!, password!, roleIds!).subscribe((resp) => {
+    this.authService.login(username!, password!).subscribe((resp) => {
       if (resp) {
-        console.log('registrado');
-        this.router.navigateByUrl('note');
+        console.log('autenticado');
+        this.router.navigateByUrl('/note');
         return;
       }
 
       this.hasError.set(true);
       setTimeout(() => {
         this.hasError.set(false);
-      }, 3000);
+      }, 4000);
     });
   }
 

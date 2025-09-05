@@ -68,7 +68,6 @@ function handle401Error(request: HttpRequest<any>, next: HttpHandlerFn, authServ
       })
     );
   } else {
-    // Si ya hay una renovación en progreso, espera el nuevo token
     return refreshTokenSubject.pipe(
       filter((token) => token !== null),
       take(1),

@@ -14,6 +14,6 @@ export class NoteComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigateByUrl('login');
+    this.router.navigateByUrl('/auth/login');
   }
 }
