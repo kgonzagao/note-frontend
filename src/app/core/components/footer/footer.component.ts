@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '@core/auth/services/auth.service';
 import { currentYearSignal } from '@utils/current-year.signal';
 
 @Component({
@@ -9,5 +10,8 @@ import { currentYearSignal } from '@utils/current-year.signal';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
+  private authService = inject(AuthService);
   year = currentYearSignal();
+
+  isAdmin = this.authService.isAdmin;
 }
