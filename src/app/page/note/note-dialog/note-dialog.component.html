@@ -1,0 +1,35 @@
+<div class="w-full max-w-md bg-white p-6 rounded-lg shadow space-y-4">
+  <h2 class="text-xl font-semibold text-gray-800">{{ getTitle() }}</h2>
+
+  <!-- Campo: Nombre -->
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      [(ngModel)]="localNote.title"
+      [readonly]="isReadOnly()"
+      placeholder="Ej: Titulo"
+    />
+  </mat-form-field>
+
+  <!-- Campo: Descripción -->
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Descripción</mat-label>
+    <textarea
+      matInput
+      [(ngModel)]="localNote.content"
+      [readonly]="isReadOnly()"
+      rows="3"
+      placeholder="Ej: contenido de la nota"
+    ></textarea>
+  </mat-form-field>
+
+  <!-- Puedes agregar más campos aquí -->
+
+  <div class="flex justify-end gap-2 pt-4">
+    <button mat-stroked-button (click)="onClose()">Cerrar</button>
+    @if (!isReadOnly()) {
+    <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+    }
+  </div>
+</div>

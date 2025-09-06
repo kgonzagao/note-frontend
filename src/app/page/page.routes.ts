@@ -9,7 +9,7 @@ export const pageRoutes: Routes = [
     children: [
       {
         path: '',
-        title: 'Basic Pages',
+        title: 'About',
         component: ExampleComponent,
       },
       {
