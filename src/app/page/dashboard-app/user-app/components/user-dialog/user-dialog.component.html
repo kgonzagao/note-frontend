@@ -1,0 +1,37 @@
+<div class="w-full max-w-md bg-white p-6 rounded-lg shadow space-y-4">
+  <h2 class="text-xl font-semibold text-gray-800">{{ getTitle() }}</h2>
+
+  <!-- Nombre completo -->
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Nombre completo</mat-label>
+    <input
+      matInput
+      [(ngModel)]="localUser.fullName"
+      [readonly]="isReadOnly()"
+      placeholder="Ej: Juan Pérez"
+    />
+  </mat-form-field>
+
+  <!-- DNI -->
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>DNI</mat-label>
+    <input
+      matInput
+      [(ngModel)]="localUser.dni"
+      [readonly]="isReadOnly()"
+      placeholder="Ej: 12345678"
+    />
+  </mat-form-field>
+
+  <!-- Activo -->
+  <mat-checkbox [(ngModel)]="localUser.enabled" [disabled]="isReadOnly()"> Activo </mat-checkbox>
+
+  <!-- Botones -->
+  <div class="flex justify-end gap-2 pt-4">
+    <button mat-stroked-button (click)="onClose()">Cerrar</button>
+
+    <button *ngIf="!isReadOnly()" mat-flat-button color="primary" (click)="onSave()">
+      Guardar
+    </button>
+  </div>
+</div>
