@@ -3,6 +3,8 @@
 **Note App** es un demo de aplicación web desarrollada con **Angular** que permite gestionar usuarios, roles y notas personales. Está diseñada con una arquitectura modular, buenas prácticas de seguridad y una interfaz moderna y responsiva gracias a Angular Material y TailwindCSS.
 
 ---
+**Backend:** [Api Backend Spring Boot](https://github.com/kgonzagao/note-backend)
+---
 
 ## 🎯Contexto y Propósito
 
